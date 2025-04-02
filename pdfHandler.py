@@ -70,36 +70,52 @@ def read_by_PdfReader(pdf_file):
         print(f"Error: {e}")
         return None
 
-def get_latest_pdf_url():
-    # URL of the competition page
-    competition_url = "http://www.handball.org.hk/competition.htm"
+def get_latest_league_pdf_url():
+    # Base URL for the PDF
+    base_url = "http://www.handball.org.hk/2_Competition/2024-2025/%E8%81%AF%E8%B3%BD/(95)%202024_LAEGUE_TIMETABLE_"
     
-    # Fetch the page content
-    response = requests.get(competition_url)
-    response.raise_for_status()  # Raise an error for bad responses
-
-    # Parse the HTML
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    # Find the relevant links
-    # Adjust the selector according to the actual structure of the HTML
-    pdf_links = soup.find_all('a', string=lambda text: 'pdf' in text.lower())
+    # Start from today's date
+    today = datetime.now()
     
-    # Assuming the first link is the latest PDF based on your needs
-    if pdf_links:
-        latest_pdf_url = pdf_links[10]['href']
-        # Ensure the URL is absolute
-        if not latest_pdf_url.startswith('http'):
-            latest_pdf_url = f"http://www.handball.org.hk/{latest_pdf_url}"
-        return latest_pdf_url
-    else:
-        return None
+    while True:
+        # Format the date to match the required format in the URL
+        date_str = today.strftime("%Y.%m.%d")
+        pdf_url = f"{base_url}{date_str}.pdf"
+        
+        # Check if the PDF exists
+        response = requests.head(pdf_url)
+        
+        if response.status_code == 200:
+            # PDF found
+            return pdf_url
+        
+        # Move to the previous day
+        today -= timedelta(days=1)
 
-# Example usage
-latest_pdf_url = get_latest_pdf_url()
-if latest_pdf_url:
-    print(f"The latest PDF URL is: {latest_pdf_url}")
-    # Now you can download and read the PDF
-    #content = download_and_read_pdf(latest_pdf_url)
-else:
-    print("No PDF link found.")
+def get_latest_ref_pdf_url():
+    # Base URL for the PDF
+    base_url = "http://www.handball.org.hk/6_Referee/2025-2026/2025-2026%E8%A3%81%E5%88%A4%E5%90%8D%E5%96%AE_"
+    
+    # Start from today's date
+    today = datetime.now()
+    
+    while True:
+        # Format the date to match the required format in the URL
+        date_str = today.strftime("%Y%m%d")
+        pdf_url = f"{base_url}{date_str}.pdf"
+        
+        # Check if the PDF exists
+        response = requests.head(pdf_url)
+        
+        if response.status_code == 200:
+            # PDF found
+            return pdf_url
+        
+        # Move to the previous day
+        today -= timedelta(days=1)
+
+if debug:
+    latest_league_pdf = get_latest_league_pdf_url()
+    latest_ref_pdf = get_latest_ref_pdf_url()
+    print(f"Latest League PDF URL: {latest_league_pdf}")
+    print(f"Latest Referee PDF URL: {latest_ref_pdf}")
