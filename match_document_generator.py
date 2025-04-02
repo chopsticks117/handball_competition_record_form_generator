@@ -30,7 +30,7 @@ def run_application(match_type, target_date, referees):
 
     # Download and read PDF
     if match_type == "聯賽":
-        url = "https://www.handball.org.hk/2_Competition/2024-2025/聯賽/(92) 2024_LAEGUE_TIMETABLE_2025.03.18.pdf"
+        url = get_latest_league_pdf_url()
     elif match_type == "手總盃":
         url = "http://www.handball.org.hk/2_Competition/2024-2025/%E6%89%8B%E7%B8%BD%E7%9B%83/(4)%202024_%E6%89%8B%E7%B8%BD%E7%9B%83%E8%B3%BD%E7%A8%8B_2025.03.20.pdf"
     elif match_type == "港九學界":
@@ -38,7 +38,7 @@ def run_application(match_type, target_date, referees):
     elif match_type == "屯門學界":
         url = "https://www.hkssf-nt.org.hk/district/sec/2024-2025/4.Tuen%20Mun/Handball/2425_TM_Junior_HB_Fixtures.pdf"
 
-    url_ref = "http://www.handball.org.hk/6_Referee/2024-2025/2024-2025%E8%A3%81%E5%88%A4%E5%90%8D%E5%96%AE_20250226.pdf"
+    url_ref = get_latest_ref_pdf_url()
     
     content = download_and_read_pdf(url, match_type)
     ref_content = download_and_read_pdf(url_ref, "ref")
